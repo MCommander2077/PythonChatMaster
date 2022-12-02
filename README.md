@@ -2,7 +2,7 @@
 Its a Chat application powered by Python.  
 #### 这是一个基于python的聊天实例  
 This is a python-based chat instance  
-###介绍 introduction  
+### 介绍 introduction  
 · Simplified-Chinese 简体中文  
 此实例使用了  
 [-bitsaver/python-chat-  https://github.com/bitsaver/python-chat/](https://github.com/bitsaver/python-chat/)  
