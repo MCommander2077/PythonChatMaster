@@ -14,3 +14,6 @@ This instance use [-bitsaver/python-chat-  https://github.com/bitsaver/python-ch
 use libs:  
 os,sys,time,socket,threading,json,ttkbootstrap,tkinter,playsound  
 You can chat freely in this introduction, and even send emoji expressions!  
+
+## 下载 download  
+[Click me to download](https://github.com/MCommander2077/PythonChatMaster/releases/new)
