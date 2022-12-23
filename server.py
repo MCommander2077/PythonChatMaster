@@ -6,7 +6,7 @@ import time
 #import sys
 import os
 
-os.system("echo off&cls&title Server-v4.0")
+os.system("echo off&cls&title Server-v5.0")
 
 # IP = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
 IP = '127.0.0.1'
@@ -49,7 +49,7 @@ class ChatServer(threading.Thread):
             print('[info]用户名为&&TestMaster，检测为测试用户')
             user = 'Test'
             users.append((conn, user, addr))
-            print('[innfo] 新的连接:', addr, ':', user)         # 打印用户名
+            print('[info] 新的连接:', addr, ':', user)         # 打印用户名
             d = onlines()                                          # 有新连接则刷新客户端的在线用户显示
             self.recv(d, addr)
             try:
@@ -79,12 +79,12 @@ class ChatServer(threading.Thread):
                 print('[info]获取用户名为：' + user)
                 for i in range(len(users)):
                     if user == users[i][1]:
-                        print('User already exist')
+                        print('[error]User already exist')
                         user = '' + user + '_2'
                 if user == 'no':
                     user = addr[0] + ':' + str(addr[1])
                 users.append((conn, user, addr))
-                print(' 已连接:', addr, ':', user)         # 打印用户名
+                print('[info]',user,'已连接')         # 打印用户名
                 d = onlines()                                          # 有新连接则刷新客户端的在线用户显示
                 self.recv(d, addr)
                 try:
@@ -94,11 +94,11 @@ class ChatServer(threading.Thread):
                         self.recv(data, addr)                         # 保存信息到队列
                     conn.close()
                 except:
-                    print(user + ' 断开连接')
+                    print('[info]',user + ' 断开连接')
                     self.delUsers(conn, addr)                             # 将断开用户移出users
                     conn.close()
             else:
-                print(' 用户密码错误！ (错误密码为' + password +')')
+                print('[info]用户密码错误！ (错误密码为' + password +')')
                 conn.send('False'.encode())
                 conn.close()
 
@@ -110,7 +110,7 @@ class ChatServer(threading.Thread):
         for i in users:
             if i[0] == conn:
                 users.pop(a)
-                print(' 在线用户: ', end='')         # 打印剩余在线用户(conn)
+                print('[info]在线用户: ', end='')         # 打印剩余在线用户(conn)
                 d = onlines()
                 self.recv(d, addr)
                 print(d)
@@ -137,19 +137,19 @@ class ChatServer(threading.Thread):
                         # user[i][1]是用户名, users[i][2]是addr, 将message[0]改为用户名
                         for j in range(len(users)):
                             if message[0] == users[j][2]:
-                                print(' this: message is from user[{}]'.format(j))
                                 try:
                                     data = ' ' + users[j][1] + '：' + message[1]
+                                    print('[info]new message:', message[1] ,'this message is from user[{}]'.format(j))
                                 except:
-                                    print('user quit error!error code:data =  + users[j][1] +  + message[1]')
+                                    print('[error]user quit error!error code:data =  + users[j][1] +  + message[1]')
                                 break
                         try:
                             users[i][0].send(data.encode())
                         except:
-                            print('user quit error!error code:users[i][0].send(data.encode())')
+                            print('[error]user quit error!error code:users[i][0].send(data.encode())')
                 # data = data.split(':;')[0]
                 if isinstance(message[1], list):  # 同上
-                    # 如果是list则打包后直接发送  
+                    # 如果是list则打包后直接发送
                     data = json.dumps(message[1])
                     for i in range(len(users)):
                         try:
@@ -160,8 +160,8 @@ class ChatServer(threading.Thread):
     def run(self):
         self.s.bind(self.ADDR)
         self.s.listen(5)
-        print('''服务器正在运行中...
-如果想要使用内网穿透，请将127.0.0.1:25565用TCP协议穿透！''')
+        print('''[info]服务器正在运行中...
+[info]如果想要使用内网穿透，请将127.0.0.1:8888用TCP协议穿透！''')
         q = threading.Thread(target=self.sendData)
         q.start()
         while True:

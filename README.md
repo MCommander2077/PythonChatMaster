@@ -5,7 +5,7 @@ This is a python-based chat instance
 ## 介绍 introduction  
 ### · Simplified-Chinese 简体中文  
 此实例使用了  
-[-bitsaver/python-chat-  https://github.com/bitsaver/python-chat/](https://github.com/bitsaver/python-chat/)  
+[- bitsaver/python-chat -](https://github.com/bitsaver/python-chat/)作为最初版本  
 使用python库：  
 os,sys,time,socket,threading,json,ttkbootstrap,tkinter,playsound  
 你可以在这个软件中自由的聊天，甚至可以发emoji表情！  

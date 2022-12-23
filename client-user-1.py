@@ -3,15 +3,20 @@ import time
 import socket
 import threading
 import json  # json.dumps(some)打包   json.loads(some)解包
-import ttkbootstrap as ttk
+
 import tkinter
+import ttkbootstrap as ttk
 import tkinter.messagebox
 from ttkbootstrap.constants import *
 from tkinter.scrolledtext import ScrolledText  # 导入多行文本框用到的包
 from playsound import playsound
 from tkinter import filedialog
 
-version = 'v4.0'
+import requests
+IntIP = requests.get('http://ifconfig.me/ip', timeout=1).text.strip()
+print('get Internet IP:',IntIP)
+
+version = 'v5.0'
 
 IP = ''
 PORT = ''
@@ -26,7 +31,7 @@ chat = '【群发】'  # 聊天对象, 默认为群聊
 def select_file():
     # 单个文件选择
     selected_file_path = filedialog.askopenfilename()  # 使用askopenfilename函数选择单个文件
-    select_path.set(selected_file_path)  
+    select_path.set(selected_file_path)
 def select_files():
     # 多个文件选择
     selected_files_path = filedialog.askopenfilenames()  # askopenfilenames函数选择多个文件
@@ -167,6 +172,10 @@ def mark(exp):  # 参数是发的表情图标记, 发送后将按钮销毁
     b6.destroy()
     ee = 0
 
+def mark_custom(exp):
+    global ee
+    mes = exp + ':;' + user + ':;' + chat
+    s.send(mes.encode())
 
 # 四个对应的函数
 def bb1():
@@ -204,7 +213,7 @@ def express():
                             relief=ttk.FLAT, bd=0)
         b6 = tkinter.Button(root, command=bb6, image=p6,
                             relief=ttk.FLAT, bd=0)
-        
+
         b1.place(x=5, y=248)
         b2.place(x=75, y=248)
         b3.place(x=145, y=248)
@@ -226,12 +235,12 @@ eBut = tkinter.Button(root, text='表情', command=express)
 eBut.place(x=5, y=320, width=60, height=30)
 
 
-botton_1 = tkinter.Button(root, text="选择单个文件", command=select_file)#.grid(row=0, column=2)
-botton_1.place(x=180, y=320, width=120, height=30)
-botton_2 = tkinter.Button(root, text="选择多个文件", command=select_files)#.grid(row=1, column=2)
-botton_2.place(x=300, y=320, width=120, height=30)
-botton_3 = tkinter.Button(root, text="选择文件夹", command=select_folder)#.grid(row=2, column=2)
-botton_3.place(x=420, y=320, width=120, height=30)
+'''bottom_1 = tkinter.Button(root, text="选择单个文件", command=select_file)#.grid(row=0, column=2)
+bottom_1.place(x=180, y=320, width=120, height=30)
+bottom_2 = tkinter.Button(root, text="选择多个文件", command=select_files)#.grid(row=1, column=2)
+bottom_2.place(x=300, y=320, width=120, height=30)
+bottom_3 = tkinter.Button(root, text="选择文件夹", command=select_folder)#.grid(row=2, column=2)
+bottom_3.place(x=420, y=320, width=120, height=30)'''
 
 # 创建多行文本框, 显示在线用户
 listbox1 = tkinter.Listbox(root)
@@ -249,7 +258,7 @@ def showUsers():
 
 
 # 查看在线用户按钮
-button1 = tkinter.Button(root, text='用户列表', command=showUsers)
+button1 = tkinter.Button(root, text='开关用户列表', command=showUsers)
 button1.place(x=75, y=320, width=90, height=30)
 
 # 创建输入文本框和关联变量
@@ -319,7 +328,7 @@ thread.start()
 
 # 用于时刻接收服务端发送的信息并打印
 def recv():
-    global users,Playsound,Password4f
+    global users,Playsound,Password
     while True:
         try:
             data = s.recv(1024)
@@ -361,6 +370,20 @@ def recv():
                     listbox.insert(ttk.END, data4, 'red')  # END将信息加在最后一行
                     Playsound = 1
                 listbox.image_create(ttk.END, image=dic[markk])
+            elif markk[0:1] == '**':
+                print('custom image')
+                data4 = '\n' + data2 + '：'  # 例:名字-> \n名字：
+                if data3 == '【群发】':
+                    if data2 == user:  # 如果是自己则将则字体变为蓝色
+                        listbox.insert(ttk.END, data4, 'blue')
+                    else:
+                        listbox.insert(ttk.END, data4, 'green')  # END将信息加在最后一行
+                        Playsound = 1
+                elif data2 == user or data3 == user:  # 显示私聊
+                    listbox.insert(ttk.END, data4, 'red')  # END将信息加在最后一行
+                    Playsound = 1
+                #listbox.image_create(ttk.END, image=dic[markk])
+
             else:
                 data1 = '\n' + data1
                 if data3 == '【群发】':
@@ -375,7 +398,6 @@ def recv():
                     listbox.insert(ttk.END, data1, 'red')  # END将信息加在最后一行
                     Playsound = 1
             listbox.see(ttk.END)  # 显示在最后
-
 
 r = threading.Thread(target=recv)
 r.start()  # 开始线程接收信息
