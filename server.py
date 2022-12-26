@@ -3,7 +3,7 @@ import threading
 import queue
 import json  # json.dumps(some)打包   json.loads(some)解包
 import time
-#import sys
+import sys
 import os
 
 os.system("echo off&cls&title Server-v5.0")
@@ -11,14 +11,34 @@ os.system("echo off&cls&title Server-v5.0")
 # IP = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
 IP = '127.0.0.1'
 PORT = 8888
-Password = 'P^$$W0rd'
+Password = ''
 user = ''
 que = queue.Queue()                             # 用于存放客户端发送的信息的队列
 users = []                                      # 用于存放在线用户的信息  [conn, user, addr]
 lock = threading.Lock()                         # 创建锁, 防止多个线程写入数据的顺序打乱
 
+# 密码设定
+
+
+def test_password():
+    global Password
+    password = input(
+        "Enter Server Password(Enter none to set to the default password P^$$W0rd): "
+    )
+    if password == '':
+        print('[info]')
+        Password = 'P^$$W0rd'
+        return True
+    elif len(password) < 8:
+        print('[error]密码设置长度过小!请设置8位以上!')
+        return False
+    else:
+        Password = password
+        return True
 
 # 将在线用户存入online列表并返回
+
+
 def onlines():
     online = []
     try:
@@ -43,7 +63,7 @@ class ChatServer(threading.Thread):
 
     # 用于接收所有客户端发送信息的函数
     def tcp_connect(self, conn, addr):
-        global Password,user
+        global Password, user
         if user == '&&TestMaster':
             # 连接后将用户信息添加到users列表
             print('[info]用户名为&&TestMaster，检测为测试用户')
@@ -60,7 +80,8 @@ class ChatServer(threading.Thread):
                 conn.close()
             except:
                 print('[info]' + user + ' 断开连接')
-                self.delUsers(conn, addr)                             # 将断开用户移出users
+                # 将断开用户移出users
+                self.delUsers(conn, addr)
                 conn.close()
         else:
             print('[info]开始检测密码')
@@ -69,11 +90,11 @@ class ChatServer(threading.Thread):
             print('[info]客户端发送原始数据为：' + cdata)
             password = cdata
             if password == Password:
-                print('[info]',user + 'Password is Right.Connecting...')
+                print('[info]', user + 'Password is Right.Connecting...')
                 print('[info]发送 密码正确 的信息...')
                 conn.send('True'.encode())  # 发送'密码正确'的信息
                 print('[info]开始接收用户名...')
-                cdata = conn.recv(1024) #接收用户名
+                cdata = conn.recv(1024)  # 接收用户名
                 cdata = cdata.decode()
                 user = cdata
                 print('[info]获取用户名为：' + user)
@@ -84,7 +105,7 @@ class ChatServer(threading.Thread):
                 if user == 'no':
                     user = addr[0] + ':' + str(addr[1])
                 users.append((conn, user, addr))
-                print('[info]',user,'已连接')         # 打印用户名
+                print('[info]', user, '已连接')         # 打印用户名
                 d = onlines()                                          # 有新连接则刷新客户端的在线用户显示
                 self.recv(d, addr)
                 try:
@@ -94,16 +115,17 @@ class ChatServer(threading.Thread):
                         self.recv(data, addr)                         # 保存信息到队列
                     conn.close()
                 except:
-                    print('[info]',user + ' 断开连接')
-                    self.delUsers(conn, addr)                             # 将断开用户移出users
+                    print('[info]', user + ' 断开连接')
+                    # 将断开用户移出users
+                    self.delUsers(conn, addr)
                     conn.close()
             else:
-                print('[info]用户密码错误！ (错误密码为' + password +')')
+                print('[info]用户密码错误！ (错误密码为' + password + ')')
                 conn.send('False'.encode())
                 conn.close()
 
-
     # 判断断开用户在users中是第几位并移出列表, 刷新客户端的在线用户显示
+
     def delUsers(self, conn, addr):
         global password
         a = 0
@@ -139,14 +161,17 @@ class ChatServer(threading.Thread):
                             if message[0] == users[j][2]:
                                 try:
                                     data = ' ' + users[j][1] + '：' + message[1]
-                                    print('[info]new message:', message[1] ,'this message is from user[{}]'.format(j))
+                                    print('[info]new message:', message[1],
+                                          'this message is from user[{}]'.format(j))
                                 except:
-                                    print('[error]user quit error!error code:data =  + users[j][1] +  + message[1]')
+                                    print(
+                                        '[error]user quit error!error code:data =  + users[j][1] +  + message[1]')
                                 break
                         try:
                             users[i][0].send(data.encode())
                         except:
-                            print('[error]user quit error!error code:users[i][0].send(data.encode())')
+                            print(
+                                '[error]user quit error!error code:users[i][0].send(data.encode())')
                 # data = data.split(':;')[0]
                 if isinstance(message[1], list):  # 同上
                     # 如果是list则打包后直接发送
@@ -171,13 +196,17 @@ class ChatServer(threading.Thread):
         self.s.close()
 
 
-
-
 if __name__ == '__main__':
-    cserver = ChatServer(PORT)
-    cserver.start()
+    while True:
+        if test_password():
+            print('[info]密码设置成功！')
+            break
+        else:
+            print('[error]密码设置失败！')
+    c_server = ChatServer(PORT)
+    c_server.start()
     while True:
         time.sleep(1)
-        '''if not cserver.isAlive():
+        if not getattr(c_server, '_closed') == True:
             print("Chat connection lost...")
-            sys.exit(0)'''
+            sys.exit(0)
