@@ -106,10 +106,10 @@ if user:
 else:
     senddata = 'no'# 没有输入用户名则标记no
 s.send(Password.encode())  # 发送密码
-pdata = s.recv(1024) #接收密码的信息
-pdata = pdata.decode() #解码密码
-print('服务器返回密码信息为：' + pdata)
-if not pdata == 'True':
+result_data = s.recv(1024) #接收密码的信息
+result_data = result_data.decode() #解码密码
+print('服务器返回密码信息为：' + result_data)
+if not result_data == 'True':
     print('服务器返回密码信息错误，正在停止....')
     tkinter.messagebox.showerror('密码错误',message='请联系服务器管理员获取密码')
     exit()
