@@ -185,8 +185,10 @@ class ChatServer(threading.Thread):
     def run(self):
         self.s.bind(self.ADDR)
         self.s.listen(5)
-        print('''[info]服务器正在运行中...
-[info]如果想要使用内网穿透，请将127.0.0.1:8888用TCP协议穿透！''')
+        print(
+'''[info]服务器正在运行中...
+[info]如果想要使用内网穿透，请将127.0.0.1:8888用TCP协议穿透！'''
+)
         q = threading.Thread(target=self.sendData)
         q.start()
         while True:
