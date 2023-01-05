@@ -12,9 +12,9 @@ from tkinter.scrolledtext import ScrolledText  # 导入多行文本框用到的�
 from playsound import playsound
 from tkinter import filedialog
 
-import requests
-IntIP = requests.get('http://ifconfig.me/ip', timeout=1).text.strip()
-print('get Internet IP:',IntIP)
+#import requests
+#IntIP = requests.get('http://ifconfig.me/ip', timeout=1).text.strip()
+#print('get Internet IP:',IntIP)
 
 version = 'v5.0'
 
@@ -52,7 +52,7 @@ loginRoot.resizable(0, 0)  # 限制窗口大小
 select_path = ttk.StringVar()
 
 IP1 = ttk.StringVar()
-IP1.set('43.249.193.233:64243')  # 默认显示的ip和端口
+IP1.set('192.168.31.114:8888')  # 默认显示的ip和端口
 User = ttk.StringVar()
 User.set('')
 Password = ttk.StringVar()
@@ -148,12 +148,12 @@ b4 = ''
 b5 = ''
 b6 = ''
 # 将图片打开存入变量中
-p1 = ttk.PhotoImage(file='./emoji/facepalm.png')
-p2 = ttk.PhotoImage(file='./emoji/smirk.png')
-p3 = ttk.PhotoImage(file='./emoji/concerned.png')
-p4 = ttk.PhotoImage(file='./emoji/smart.png')
-p5 = ttk.PhotoImage(file='./emoji/poop.png')
-p6 = ttk.PhotoImage(file='./emoji/smiling-with-sweat.png')
+p1 = ttk.PhotoImage('http://ddns.gamesmc.online:10000/PythonChatMasterEmojiCDN/facepalm.png')
+p2 = ttk.PhotoImage('http://ddns.gamesmc.online:10000/PythonChatMasterEmojiCDN/smirk.png')
+p3 = ttk.PhotoImage('http://ddns.gamesmc.online:10000/PythonChatMasterEmojiCDN/concerned.png')
+p4 = ttk.PhotoImage('http://ddns.gamesmc.online:10000/PythonChatMasterEmojiCDN/smart.png')
+p5 = ttk.PhotoImage('http://ddns.gamesmc.online:10000/PythonChatMasterEmojiCDN/poop.png')
+p6 = ttk.PhotoImage('http://ddns.gamesmc.online:10000/PythonChatMasterEmojiCDN/smiling-with-sweat.png')
 # 用字典将标记与表情图片一一对应, 用于后面接收标记判断表情贴图
 dic = {'aa**': p1, 'bb**': p2, 'cc**': p3, 'dd**': p4, 'ee**': p5, 'ff**': p6}
 ee = 0  # 判断表情面板开关的标志
